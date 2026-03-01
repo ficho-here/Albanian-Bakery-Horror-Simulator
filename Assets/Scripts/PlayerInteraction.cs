@@ -8,8 +8,11 @@ public class PlayerInteraction : MonoBehaviour
 
     [SerializeField]
     Transform holdPoint;
+    [SerializeField]
+    Transform DropGround;
 
     GameObject Item;
+    GameObject clone;
 
     [SerializeField]
     float distance = 5.0f;
@@ -35,11 +38,13 @@ public class PlayerInteraction : MonoBehaviour
         if (Physics.Raycast(ray, out hit, distance))
         {
 
-            GameObject clone = Instantiate(hit.collider.gameObject);
             if (Item == null)
             {
-                if (hit.collider != null && Input.GetKeyDown(KeyCode.E))
+
+                if (Input.GetKeyDown(KeyCode.E))
                 {
+
+                    clone = Instantiate(hit.collider.gameObject);
                     Item = hit.collider.gameObject;
 
                     clone.transform.SetPositionAndRotation(holdPoint.transform.position, holdPoint.transform.rotation);
@@ -47,20 +52,21 @@ public class PlayerInteraction : MonoBehaviour
                     clone.transform.SetParent(holdPoint);
 
                 }
-
             }
             if (Item != null)
             {
-                if (Input.GetKeyDown(KeyCode.Q))
+                if (Input.GetKeyDown(KeyCode.Q) && clone.transform.parent == holdPoint)
                 {
-
-                    clone.transform.SetParent(null);
+                    clone.transform.SetParent(DropGround);
                     Rigidbody rb = clone.AddComponent<Rigidbody>();
                     rb.mass = 1f;
                     rb.useGravity = true;
                     rb.isKinematic = false;
+                    Item = null;
                 }
             }
+
+
         }
 
 
